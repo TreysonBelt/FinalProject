@@ -12,56 +12,16 @@ while(end == 0) {
     Console.Write("What would you like to do? ");
     string decision = Console.ReadLine();
     if (decision == "1") {
-        Console.WriteLine("What dice?");
-        string whatdie = Console.ReadLine();
-        if (whatdie == "4") {
-            Random rnd = new Random();
-            int roll4  = rnd.Next(1, 4);
-            Console.WriteLine(roll4);
-        }
-        else if (whatdie == "6") {
-            Random rnd = new Random();
-            int roll6  = rnd.Next(1, 6);
-            Console.WriteLine(roll6);
-        }
-        else if (whatdie == "8") {
-            Random rnd = new Random();
-            int roll8  = rnd.Next(1, 8);
-            Console.WriteLine(roll8);
-        }
-        else if (whatdie == "10") {
-            Random rnd = new Random();
-            int roll10  = rnd.Next(1, 10);
-            Console.WriteLine(roll10);
-        }
-        else if (whatdie == "12") {
-            Random rnd = new Random();
-            int roll12  = rnd.Next(1, 12);
-            Console.WriteLine(roll12);
-        }
-        else if (whatdie == "20") {
-            Random rnd = new Random();
-            int roll20  = rnd.Next(1, 20);
-            Console.WriteLine(roll20);
-            if (roll20 < 10) {
-                Console.WriteLine("Burn these ones.");
-            }
-        }
-        else if (whatdie == "100") {
-            Random rnd = new Random();
-            int roll100 = rnd.Next(1, 100);
-            Console.WriteLine(roll100);
-        }
-        else {
-            Console.WriteLine("Unable to roll non existent dice. please pick a reasonable dice type");
-        }
+        int dice = 0;
+        rollDice(dice);
     }
-    else if (decision == "4") {
+    else if (decision == "3") {
         end = 1;
     }
     else if (decision == "2") {
         Console.Write("Health: ");
         int health = Console.Read();
+        health = health - 48;
         int failedsaves = 0;
         string move = "";
         do {
@@ -74,40 +34,162 @@ while(end == 0) {
             if (move == "1") {
                 pFight();
             }
+            else if (move == "2") {
+                Random random = new Random();
+                int skillroll = random.Next(1, 21);
+                Console.Write("What is the bonus to d20 roll: ");
+                string rollbonus = Console.ReadLine();
+                int rolbonus = int.Parse(rollbonus);
+                skillroll = (skillroll + rolbonus);
+                Console.WriteLine(skillroll);
+            }
+            else if (move == "3") {
+                Console.Write("Damage: ");
+                string damagetaken = Console.ReadLine();
+                int damage = int.Parse(damagetaken);
+                health = health - damage;
+                Console.WriteLine($"You have {health} health left.");
+                if (health <= 0) {
+                    Random random = new Random();
+                    int deathsave = random.Next(1, 21);
+                    if (deathsave < 10) {
+                        Console.WriteLine("You have lost another death save.");
+                        failedsaves = failedsaves + 1;
+                    }
+                }
+            }
             else if (move == "4") {
                 failedsaves = 3;
             }
         } while (failedsaves < 3);
     }
-    else if (decision == "3") {
-        Console.WriteLine("nope");
-    }
     else if (decision == "Help") {
         Console.WriteLine(@" The different types of use:
 1. Roll Dice
 2. Player Battle (player side of a fight)
-3. DM Battle (DM side of battle)
-4. End");
+3. End");
     }
 }
 static void Explanation() {
     Console.WriteLine(@"Welcome to the DND Assistant. THis will help facilitate an easier play experience.");
 }
 
-static void pFight() {
+int rollDice(int roll) {
+            Console.WriteLine("What dice?");
+        string whatdie = Console.ReadLine();
+        if (whatdie == "4") {
+            Random rnd = new Random();
+            roll  = rnd.Next(1, 5);
+            return roll;
+        }
+        else if (whatdie == "6") {
+            Random rnd = new Random();
+            roll  = rnd.Next(1, 7);
+            return roll;
+        }
+        else if (whatdie == "8") {
+            Random rnd = new Random();
+            roll  = rnd.Next(1, 9);
+            return roll;
+        }
+        else if (whatdie == "10") {
+            Random rnd = new Random();
+            roll  = rnd.Next(1, 11);
+            return roll;
+        }
+        else if (whatdie == "12") {
+            Random rnd = new Random();
+            roll  = rnd.Next(1, 13);
+            return roll;
+        }
+        else if (whatdie == "20") {
+            Random rnd = new Random();
+            roll  = rnd.Next(1, 21);
+            if (roll < 10) {
+                Console.WriteLine("Burn these ones.");
+            }
+            return roll;
+        }
+        else if (whatdie == "100") {
+            Random rnd = new Random();
+            roll = rnd.Next(1, 101);
+            Console.WriteLine(roll);
+            return roll;
+        }
+        else {
+            Console.WriteLine("Unable to roll non existent dice. please pick a reasonable dice type");
+            roll = 0;
+            
+            return roll;
+        }
+}
+void pFight() {
     Console.Write("magic or weapon: ");
     string fightmove = Console.ReadLine();
     if (fightmove == "magic") {
-        
+        Console.Write("Spell save or ranged attack: ");
+        string fightmove2 = Console.ReadLine();
+        if (fightmove2 == "Spell Save") {
+            int damageroll = 0;
+            rollDice(damageroll);
+            Console.Write("bonus: ");
+            int bonus = Console.Read();
+            bonus = bonus - 48;
+            damageroll = damageroll + bonus;
+            Console.WriteLine($"Damage: {damageroll}");
+        }
+        else if (fightmove2 == "Ranged Attack") {
+        Random random = new Random();
+        int attackroll = random.Next(1, 21);
+        Console.Write("What is the bonus to d20 roll: ");
+        int rollbonus = Console.Read();
+        rollbonus = rollbonus - 48;
+        attackroll = (attackroll + rollbonus);
+        Console.WriteLine(attackroll);
+        Console.Write("Hit or Miss? ");
+        string guessinevermisshuh = Console.ReadLine();
+        if (guessinevermisshuh == "Hit") {
+            int damageroll = 0;
+            rollDice(damageroll);
+            Console.Write("bonus: ");
+            int bonus = Console.Read();
+            bonus = bonus - 48;
+            damageroll = damageroll + bonus;
+            Console.WriteLine($"Damage: {damageroll}");
+        }
+        else if (guessinevermisshuh == "Miss") {
+            Console.WriteLine("OOF!");
+        }
+        else {
+            Console.WriteLine($"Unable to provide {guessinevermisshuh}.");
+        }
+        }
     }
     else if (fightmove =="weapon") {
 
         Random random = new Random();
-        int attackroll = random.Next(1, 20);
+        int attackroll = random.Next(1, 21);
         Console.Write("What is the bonus to d20 roll: ");
         int rollbonus = Console.Read();
-        Console.WriteLine(attackroll);
+        rollbonus = rollbonus - 48;
         attackroll = (attackroll + rollbonus);
         Console.WriteLine(attackroll);
+        Console.WriteLine("Hit or Miss? ");
+        string guessinevermisshuh = Console.ReadLine();
+        if (guessinevermisshuh == "Hit") {
+            int damageroll = 0;
+            rollDice(damageroll);
+            Console.Write("bonus: ");
+            int bonus = Console.Read();
+            bonus = bonus - 48;
+            damageroll = damageroll + bonus;
+            Console.WriteLine($"Damage: {damageroll}");
+        }
+        else if (guessinevermisshuh == "Miss") {
+            Console.WriteLine("OOF!");
+        }
+        else {
+            Console.WriteLine($"Unable to provide {guessinevermisshuh}.");
+        }
     }
 }
